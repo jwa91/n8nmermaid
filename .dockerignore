@@ -1,0 +1,34 @@
+# Git files
+.git
+.gitignore
+
+# Python virtual environment
+.venv
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Test and cache files
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Tool output & logs
+output/
+*.log
+
+# Utility folders not needed in final image
+file2md/
+
+# Environment files
+.env*
+
+# Docker files
+Dockerfile
+docker-compose.yml

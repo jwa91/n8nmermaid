@@ -1,0 +1,2881 @@
+{
+    "name": "JWA Bot v2",
+    "nodes": [
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "67016ffc-09c9-4f74-a772-589151033785",
+                            "name": "message",
+                            "value": "={{ $json.message }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "b599f913-3075-4e13-9e32-524e8c4fc52f",
+                            "name": "currentDate",
+                            "value": "={{ $now }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "dbc3a52b-00a8-4a30-b9b2-2a63f3c87017",
+                            "name": "trigger",
+                            "value": "={{ $json.trigger }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "0529000a-9310-4b98-9c76-13bc80cbd304",
+                            "name": "mediatype",
+                            "value": "={{ $json.mediatype }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "7c2e7c8b-adc4-4817-96fe-cd2d3aae3eac",
+                            "name": "requestID",
+                            "value": "={{ Math.floor(Math.random() * 100000) }}",
+                            "type": "number"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "c02bf3d8-da8f-4e4d-ac8f-d1196ef8a394",
+            "name": "Schema",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                2160,
+                2160
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "3fe8ec25-3bfb-42b2-8895-09c489bb80c1",
+                            "leftValue": "JanWillemAltink",
+                            "rightValue": "={{ $json.message.chat.username }}",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals",
+                                "name": "filter.operator.equals"
+                            }
+                        },
+                        {
+                            "id": "bfb51b63-15f0-4079-918d-1ae52e9d25e2",
+                            "leftValue": 5238084209,
+                            "rightValue": "={{ $json.message.chat.id }}",
+                            "operator": {
+                                "type": "number",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "id": "f461ce82-2f9a-4371-b596-e7aa23c013d3",
+            "name": "Filter own messages",
+            "type": "n8n-nodes-base.filter",
+            "typeVersion": 2.2,
+            "position": [
+                371,
+                1935
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "3a314ceb-de04-4b37-85cc-e4f7b54b6071",
+                            "leftValue": "={{ $json.message.photo }}",
+                            "rightValue": "\n",
+                            "operator": {
+                                "type": "array",
+                                "operation": "exists",
+                                "singleValue": true
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "id": "07077a95-cd56-4f37-9f69-61e1faef14b4",
+            "name": "Pictures?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                591,
+                1935
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "3a314ceb-de04-4b37-85cc-e4f7b54b6071",
+                            "leftValue": "={{ $json.message.voice }}",
+                            "rightValue": "\n",
+                            "operator": {
+                                "type": "object",
+                                "operation": "exists",
+                                "singleValue": true
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "id": "079fa73d-4a2c-4bb9-bd38-05a8048daef9",
+            "name": "Audio?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                940,
+                1940
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "file",
+                "fileId": "={{ $json.message.voice.file_id }}"
+            },
+            "id": "6904f218-59d3-4193-b15c-517ee9287b89",
+            "name": "Get Voice File",
+            "type": "n8n-nodes-base.telegram",
+            "position": [
+                1320,
+                1920
+            ],
+            "typeVersion": 1.1,
+            "credentials": {
+                "telegramApi": {
+                    "id": "i7hL4827cTwM5Wt9",
+                    "name": "JWA_v2_bot"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "audio",
+                "operation": "transcribe",
+                "options": {}
+            },
+            "id": "991943a9-8717-4ee6-bebd-a2854da9e6e7",
+            "name": "Speech to Text",
+            "type": "@n8n/n8n-nodes-langchain.openAi",
+            "position": [
+                1540,
+                1920
+            ],
+            "typeVersion": 1.3,
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-mini",
+                "options": {}
+            },
+            "id": "46537349-752d-4b48-ae6d-ffad103841a9",
+            "name": "gpt-4o-mini",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                2560,
+                2360
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-mini",
+                "options": {}
+            },
+            "id": "35fd9a10-57de-46d9-a8ec-30118a9f41c0",
+            "name": "4o Mini (reminder)",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                4040,
+                960
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "calendar": {
+                    "__rl": true,
+                    "value": "janwillemaltink@gmail.com",
+                    "mode": "list",
+                    "cachedResultName": "Overig"
+                },
+                "start": "={{ $json.output.eventDate }}",
+                "end": "={{ $json.output.eventDate }}",
+                "additionalFields": {
+                    "summary": "={{ $json.output.eventName }}"
+                }
+            },
+            "id": "92109106-d4ed-4118-a810-bf96ecccb17a",
+            "name": "Google Calendar",
+            "type": "n8n-nodes-base.googleCalendar",
+            "typeVersion": 1.2,
+            "position": [
+                4580,
+                760
+            ],
+            "credentials": {
+                "googleCalendarOAuth2Api": {
+                    "id": "1dtW9vjUEraykGtb",
+                    "name": "Google Calendar account final"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "formatDate",
+                "date": "={{ $json.start.dateTime }}",
+                "format": "custom",
+                "customFormat": "d LLLL y - T (cccc) ",
+                "options": {}
+            },
+            "id": "968459b2-2538-4248-98ca-b34681b8bd99",
+            "name": "Date & Time",
+            "type": "n8n-nodes-base.dateTime",
+            "typeVersion": 2,
+            "position": [
+                5040,
+                760
+            ],
+            "notes": "https://github.com/moment/luxon/blob/master/docs/formatting.md"
+        },
+        {
+            "parameters": {
+                "chatId": "=5238084209",
+                "text": "={{ $json.markdownAnswerText }}",
+                "additionalFields": {
+                    "appendAttribution": false
+                }
+            },
+            "id": "b40e562b-a853-416a-a7bb-802efb9c4b5f",
+            "name": "Telegram",
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                8200,
+                1720
+            ],
+            "credentials": {
+                "telegramApi": {
+                    "id": "i7hL4827cTwM5Wt9",
+                    "name": "JWA_v2_bot"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "respondWith": "text",
+                "responseBody": "={{ $json.markdownAnswerText }}",
+                "options": {}
+            },
+            "id": "b8db01f8-fa24-4070-9d64-7b38fc315650",
+            "name": "Respond to Webhook",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1.1,
+            "position": [
+                8200,
+                2140
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "databasePage",
+                "databaseId": {
+                    "__rl": true,
+                    "value": "130c8bf5-616b-80c8-9f7d-f85e13793292",
+                    "mode": "list",
+                    "cachedResultName": "To Do Lijst",
+                    "cachedResultUrl": "https://www.notion.so/130c8bf5616b80c89f7df85e13793292"
+                },
+                "title": "={{ $json.output.task }}",
+                "options": {}
+            },
+            "id": "ba43f04c-bf18-40be-b820-fa9044606a3b",
+            "name": "Notion",
+            "type": "n8n-nodes-base.notion",
+            "typeVersion": 2.2,
+            "position": [
+                5060,
+                1140
+            ],
+            "credentials": {
+                "notionApi": {
+                    "id": "7NzXn0yUiFxLy87U",
+                    "name": "Notion account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "03007a91-cd41-47ec-9ca3-a74c872d9095",
+                            "name": "voiceAnswerVoice",
+                            "value": "=I have created a reminder in your calendar on  {{ $json.formattedDate }}. The name of the event is {{ $('Google Calendar').item.json.summary }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "332b0ad0-6d5c-4db3-b8cc-c0a888ecfb2e",
+                            "name": "voiceAnswerText",
+                            "value": "=🔗 - click [here]({{ $('Google Calendar').item.json.htmlLink }}) to see the reminder in your calendar ",
+                            "type": "string"
+                        },
+                        {
+                            "id": "365d7c71-57fe-45fc-846d-6e1aeaf6171b",
+                            "name": "markdownAnswerText",
+                            "value": "=✅ I created a reminder:\n🔗 - [{{ $('Google Calendar').item.json.summary }}]({{ $('Google Calendar').item.json.htmlLink }})\n📆 - {{ $json.formattedDate }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "dccf07e4-8dc4-42a4-be2b-e2028b09d3a8",
+            "name": "Reminder Return Messages",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                5460,
+                760
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "sendAudio",
+                "chatId": "5238084209",
+                "binaryData": true,
+                "additionalFields": {}
+            },
+            "id": "45851b39-4560-476f-89d8-b9a3cfd451af",
+            "name": "Verstuur Voicememo",
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                7720,
+                1920
+            ],
+            "credentials": {
+                "telegramApi": {
+                    "id": "i7hL4827cTwM5Wt9",
+                    "name": "JWA_v2_bot"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "chatId": "=5238084209",
+                "text": "={{ $('Return Messages Mapping').item.json.voiceAnswerText }}",
+                "additionalFields": {
+                    "appendAttribution": false
+                }
+            },
+            "id": "06ba316b-cdaf-4400-aea7-2a3b4f7faa17",
+            "name": "Verstuur text",
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                8200,
+                1920
+            ],
+            "credentials": {
+                "telegramApi": {
+                    "id": "i7hL4827cTwM5Wt9",
+                    "name": "JWA_v2_bot"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "bb0d15dc-664c-4f63-b2a1-2ea5b1d7cf88",
+                            "name": "markdownAnswerText",
+                            "value": "={{ $json.markdownAnswerText }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "1f4b8808-ec94-4d50-bd09-5ec73e86e871",
+                            "name": "voiceAnswerText",
+                            "value": "={{ $json.voiceAnswerText }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "5c1125f2-cfb6-440e-b4e6-b3ebc787db83",
+                            "name": "voiceAnswerVoice",
+                            "value": "={{ $json.voiceAnswerVoice }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "a97f1d8d-3725-4864-a439-b232d08037b8",
+            "name": "Return Messages Mapping",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                6320,
+                2140
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "audio",
+                "input": "={{ $json.voiceAnswerVoice }}",
+                "options": {}
+            },
+            "id": "0217b551-1191-4e61-857d-9d518d9adca9",
+            "name": "OpenAI",
+            "type": "@n8n/n8n-nodes-langchain.openAi",
+            "typeVersion": 1.6,
+            "position": [
+                7420,
+                1920
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-mini",
+                "options": {}
+            },
+            "id": "cc3275ba-1b79-4acd-a081-0dffa23ae3f9",
+            "name": "4o-mini tasks",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                3960,
+                1620
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "databasePage",
+                "operation": "getAll",
+                "databaseId": {
+                    "__rl": true,
+                    "value": "130c8bf5-616b-80c8-9f7d-f85e13793292",
+                    "mode": "list",
+                    "cachedResultName": "To Do Lijst",
+                    "cachedResultUrl": "https://www.notion.so/130c8bf5616b80c89f7df85e13793292"
+                },
+                "limit": 30,
+                "filterType": "manual",
+                "filters": {
+                    "conditions": [
+                        {
+                            "key": "Status|status",
+                            "condition": "equals",
+                            "statusValue": "Not started"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "4b3a9c7f-d91c-432d-8f8a-3f81dbbf4304",
+            "name": "Get tasks",
+            "type": "n8n-nodes-base.notionTool",
+            "typeVersion": 2.2,
+            "position": [
+                4940,
+                1840
+            ],
+            "credentials": {
+                "notionApi": {
+                    "id": "7NzXn0yUiFxLy87U",
+                    "name": "Notion account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "sessionIdType": "customKey",
+                "sessionKey": "={{ $('Schema').item.json.requestID }}",
+                "contextWindowLength": 15
+            },
+            "id": "bfbd3b1e-2e71-4b4e-b77a-dce947d6cf5d",
+            "name": "Window Buffer Memory",
+            "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+            "typeVersion": 1.2,
+            "position": [
+                4880,
+                1700
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o",
+                "options": {}
+            },
+            "id": "c9035622-4148-4579-9fa3-93397f9e7473",
+            "name": "4o todo",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                4820,
+                1620
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "03007a91-cd41-47ec-9ca3-a74c872d9095",
+                            "name": "voiceAnswerVoice",
+                            "value": "=I have created a ToDo in Notion called \"{{ $json.name }}\".",
+                            "type": "string"
+                        },
+                        {
+                            "id": "332b0ad0-6d5c-4db3-b8cc-c0a888ecfb2e",
+                            "name": "voiceAnswerText",
+                            "value": "=🔗 - click [here]({{ $json.url }}) to see the todo in Notion. ",
+                            "type": "string"
+                        },
+                        {
+                            "id": "365d7c71-57fe-45fc-846d-6e1aeaf6171b",
+                            "name": "markdownAnswerText",
+                            "value": "=✅ I created a ToDo:\n🔗 - [{{ $json.property_task_name }}]({{ $json.url }})\n📊 - Status: {{ $json.property_status }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "e1c0c46f-2d7d-417e-80ba-7ffc89aa6bd7",
+            "name": "Task extraction return messages",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                5480,
+                1140
+            ]
+        },
+        {
+            "parameters": {},
+            "id": "f93e034b-d8bd-4c36-b8c6-470f086a32a2",
+            "name": "Auto-fixing Output Parser",
+            "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+            "typeVersion": 1,
+            "position": [
+                5260,
+                1720
+            ]
+        },
+        {
+            "parameters": {
+                "schemaType": "manual",
+                "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"formatted_markdown\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"A fully formatted markdown string describing the answer to the userquery\"\n\t\t},\n\t\t\"speech_text\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"A short string without links, designed for speech synthesis describing the ansewr to the userquery in  short\"\n\t\t},\n\t\t\"task_links\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"A list of markdown links to all mentioned or modified tasks that is accompanied as a text message with the speech_text\"\n\t\t}\n    }\n}\n"
+            },
+            "id": "bfcb4fae-0798-4bda-8717-a2eae7aac052",
+            "name": "Structured Output Parser",
+            "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+            "typeVersion": 1.2,
+            "position": [
+                5400,
+                1860
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o",
+                "options": {}
+            },
+            "id": "2fa69609-6620-4e98-84d6-9e09280da9a4",
+            "name": "gpt-4o",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                5260,
+                1860
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "databasePage",
+                "operation": "update",
+                "pageId": {
+                    "__rl": true,
+                    "value": "={{ $fromAI(\"url\") }} ",
+                    "mode": "url"
+                },
+                "simple": false,
+                "propertiesUi": {
+                    "propertyValues": [
+                        {
+                            "key": "=Status|status",
+                            "statusValue": "=Done"
+                        },
+                        {
+                            "key": "=TaskName|title",
+                            "title": "={{ $fromAI(\"TaskName\") }} "
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "f5d9d371-40cb-41f1-9be9-d8d527b20398",
+            "name": "Update single task",
+            "type": "n8n-nodes-base.notionTool",
+            "typeVersion": 2.2,
+            "position": [
+                5080,
+                1760
+            ],
+            "credentials": {
+                "notionApi": {
+                    "id": "7NzXn0yUiFxLy87U",
+                    "name": "Notion account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "03007a91-cd41-47ec-9ca3-a74c872d9095",
+                            "name": "voiceAnswerVoice",
+                            "value": "={{ $json.output.speech_text }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "332b0ad0-6d5c-4db3-b8cc-c0a888ecfb2e",
+                            "name": "voiceAnswerText",
+                            "value": "=🔗 [Bekijk de to do in Notion]({{ $json.output.task_links }})",
+                            "type": "string"
+                        },
+                        {
+                            "id": "365d7c71-57fe-45fc-846d-6e1aeaf6171b",
+                            "name": "markdownAnswerText",
+                            "value": "={{ $json.output.formatted_markdown }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "38af6bdb-3e89-48f9-a57a-9a2266d2fa2a",
+            "name": "Task update return messages1",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                5480,
+                1460
+            ]
+        },
+        {
+            "parameters": {
+                "content": "# Triggers\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+                "height": 4786.539873119167,
+                "width": 379.98934769794903,
+                "color": 4
+            },
+            "id": "e6bcaf13-a0ab-4743-b163-8ff5e6f2f016",
+            "name": "Sticky Note",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                140,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "content": "## ToDo Agent (Notion)\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+                "height": 935.441796201088,
+                "width": 2112.8872440911773,
+                "color": 6
+            },
+            "id": "af574eb5-aad2-47f6-b0e8-630ffbb2b455",
+            "name": "Sticky Note1",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                3640,
+                1060
+            ]
+        },
+        {
+            "parameters": {
+                "content": "# Reply handling\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+                "height": 4796.54839982084,
+                "width": 2664.800953220275,
+                "color": 3
+            },
+            "id": "2fda5cc5-954e-4481-80b4-a9dccf19f9b5",
+            "name": "Sticky Note2",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                5760,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "42d06eb4-83d9-4166-9116-c8e545fc0557",
+                            "leftValue": "={{ $json.message.caption }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "string",
+                                "operation": "notExists",
+                                "singleValue": true
+                            }
+                        },
+                        {
+                            "id": "dc65f2c0-9824-4b36-966e-57205083d614",
+                            "leftValue": "={{ $json.message.caption }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "string",
+                                "operation": "empty",
+                                "singleValue": true
+                            }
+                        }
+                    ],
+                    "combinator": "or"
+                },
+                "options": {}
+            },
+            "id": "3ce18a48-02bd-4a91-8f53-4761a871120b",
+            "name": "If",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                1320,
+                1660
+            ]
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "ebf8364c-5d18-42f2-8b9d-38b7f15d911d",
+                            "name": "caption",
+                            "value": "={{ $json.message.caption }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "bec7c3ed-8f23-46c9-bc0b-93b3866539a2",
+            "name": "Edit Fields",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                2080,
+                1660
+            ]
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "6346ef56-a7cb-4a0e-967b-7259778ec47e",
+                            "name": "caption",
+                            "value": "please describe the picture",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "540cdbe8-54f3-403a-8d27-972604ae6007",
+            "name": "add caption",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                1960,
+                1340
+            ]
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "c0548331-6995-4da7-bf89-960f636f7059",
+                            "name": "mappedCaption",
+                            "value": "={{ $json.caption }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "59074233-6f8d-418d-8aed-da0fdb4a0478",
+                            "name": "trigger",
+                            "value": "telegram",
+                            "type": "string"
+                        },
+                        {
+                            "id": "7b2a5e20-c3aa-4eca-b79e-a63a45ad4fe1",
+                            "name": "mediatype",
+                            "value": "image",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "9c494e81-2b91-4e9f-b887-53058728f9b6",
+            "name": "map captions",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                2720,
+                1340
+            ]
+        },
+        {
+            "parameters": {
+                "content": "## Quick reminder agent (Calendar)\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+                "height": 396.21801834065167,
+                "width": 2110.87972862303,
+                "color": 6
+            },
+            "id": "00783d8c-71d9-4188-86b4-1dee38b2ce38",
+            "name": "Sticky Note3",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                3640,
+                660
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "information"
+            },
+            "id": "a471ab48-1717-4479-8db5-64a3d0827048",
+            "name": "Edit Image",
+            "type": "n8n-nodes-base.editImage",
+            "typeVersion": 1,
+            "position": [
+                4580,
+                360
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "image",
+                "operation": "analyze",
+                "modelId": {
+                    "__rl": true,
+                    "value": "gpt-4o",
+                    "mode": "list",
+                    "cachedResultName": "GPT-4O"
+                },
+                "text": "={{ $('map captions').item.json.mappedCaption }}",
+                "inputType": "base64",
+                "options": {}
+            },
+            "id": "f1174a0b-ba34-4b64-b581-af3757c0ac75",
+            "name": "OpenAI1",
+            "type": "@n8n/n8n-nodes-langchain.openAi",
+            "typeVersion": 1.6,
+            "position": [
+                5040,
+                360
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "787439a3-0992-4073-9bab-ae5223560d29",
+                            "leftValue": "={{ $('Schema').item.json.trigger }}",
+                            "rightValue": "telegram",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals",
+                                "name": "filter.operator.equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "id": "3abac6b0-cf53-4c5c-96f1-ae27b4481400",
+            "name": "telegram?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                6660,
+                2140
+            ]
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "b442a065-e93e-461f-948b-007f60750489",
+                            "name": "markdownAnswerText",
+                            "value": "=ℹ️ 🖼️ \n{{ $json.content }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "da76a95b-f815-42e9-ad09-597a75ea4793",
+            "name": "mapImageAnswer",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                5460,
+                360
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "ec8d27e7-0396-4277-b388-10300f53db18",
+                            "leftValue": "={{ $('Schema').item.json.mediatype }}",
+                            "rightValue": "voice",
+                            "operator": {
+                                "type": "string",
+                                "operation": "notEquals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "id": "df0f9250-3979-413b-80c6-fd3a56e4d84d",
+            "name": "No voice?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                7080,
+                1900
+            ]
+        },
+        {
+            "parameters": {
+                "content": "## Image agent\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+                "height": 396.21801834065167,
+                "width": 2110.5662056630053,
+                "color": 6
+            },
+            "id": "013848d2-3596-447f-a420-da60e789ff45",
+            "name": "Sticky Note4",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                3640,
+                260
+            ]
+        },
+        {
+            "parameters": {
+                "content": "# Routing\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+                "height": 4796.539873119165,
+                "width": 3086.135192877941,
+                "color": 2
+            },
+            "id": "8a567b46-95e0-4022-bbf9-619d241cb1f1",
+            "name": "Sticky Note5",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                540,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "content": "# Agents\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+                "height": 260.11285726624857,
+                "width": 2110.5662056630053,
+                "color": 6
+            },
+            "id": "5a6feadc-dd8e-4b09-9ef0-4ef1254b63c3",
+            "name": "Sticky Note6",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                3640,
+                -3.8948389255969005
+            ]
+        },
+        {
+            "parameters": {
+                "inputText": "={{ $json.message }}",
+                "categories": {
+                    "categories": [
+                        {
+                            "category": "reminder",
+                            "description": "If the message is about setting a reminder, or include the word \"reminder\"."
+                        },
+                        {
+                            "category": "task",
+                            "description": "If the message is about task(s)/todo(s), without including a date"
+                        },
+                        {
+                            "category": "mail",
+                            "description": "if the message is about an email or contains the word email"
+                        },
+                        {
+                            "category": "calendar",
+                            "description": "if the message is about appointments or the calendar"
+                        }
+                    ]
+                },
+                "options": {
+                    "fallback": "other"
+                }
+            },
+            "id": "9b2ef196-7512-42fb-93f5-a4712e30b7b1",
+            "name": "Text Classifier",
+            "type": "@n8n/n8n-nodes-langchain.textClassifier",
+            "typeVersion": 1,
+            "position": [
+                2540,
+                2140
+            ]
+        },
+        {
+            "parameters": {
+                "content": "## e-mail Agent (Gmail)\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+                "height": 921.4011369887919,
+                "width": 2112.8872440911773,
+                "color": 6
+            },
+            "id": "92ab2009-ef75-4f2a-aae5-b1f68ba3418d",
+            "name": "Sticky Note7",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                3640,
+                2000
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "getAll",
+                "filters": {
+                    "labelIds": [
+                        "INBOX",
+                        "UNREAD"
+                    ],
+                    "readStatus": "unread",
+                    "receivedAfter": "={{$fromAI(\"date\",\"the date after which to fetch the messages in format YYYY-MM-DDTHH:MM:SS\")}}"
+                }
+            },
+            "id": "499b2992-6325-4607-b86b-96b9fb5454c9",
+            "name": "Get Email",
+            "type": "n8n-nodes-base.gmailTool",
+            "position": [
+                4300,
+                2540
+            ],
+            "typeVersion": 2.1,
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "oF16NbyB5XJc03Nr",
+                    "name": "Gmail account final"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "draft",
+                "subject": "={{ $fromAI(\"Subject\", \"the subject of the draft email\", string) }} ",
+                "message": "={{ $fromAI(\"Message\", \"the email message content\", string) }} ",
+                "options": {}
+            },
+            "id": "e4086e89-c2ed-4b26-ad4c-f2b6417fed15",
+            "name": "Gmail create draft",
+            "type": "n8n-nodes-base.gmailTool",
+            "typeVersion": 2.1,
+            "position": [
+                4140,
+                2660
+            ],
+            "webhookId": "cc90c666-6b0e-469f-851d-f823a2c4b6ea",
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "AlI80zffXQhJR3fM",
+                    "name": "Gmail account 2"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "sessionIdType": "customKey",
+                "sessionKey": "={{ $('Schema').item.json.requestID }}",
+                "contextWindowLength": 15
+            },
+            "id": "c98507ea-bddf-412b-9a53-06324a5519d6",
+            "name": "Window Buffer Memory1",
+            "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+            "typeVersion": 1.2,
+            "position": [
+                4000,
+                2540
+            ]
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $json.message }}",
+                "hasOutputParser": true,
+                "options": {
+                    "systemMessage": "You are a helpful assistant",
+                    "maxIterations": 10
+                }
+            },
+            "id": "54714dab-a160-4343-84a2-f20f8a043284",
+            "name": "Todo agent",
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 1.6,
+            "position": [
+                4800,
+                1460
+            ],
+            "retryOnFail": true
+        },
+        {
+            "parameters": {},
+            "id": "6e1f4cd7-37be-4608-897c-f5e2539f7256",
+            "name": "Auto-fixing Output Parser1",
+            "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+            "typeVersion": 1,
+            "position": [
+                4640,
+                2420
+            ]
+        },
+        {
+            "parameters": {
+                "schemaType": "manual",
+                "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"formatted_markdown\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"A fully formatted markdown string describing the answer to the userquery\"\n\t\t},\n\t\t\"speech_text\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"A short string without links, designed for speech synthesis describing the answer to the userquery in  short\"\n\t\t},\n\t\t\"links\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"A list of markdown links to all mentioned mails or drafts that is accompanied as a text message with the speech_text. Always fill if you sent a speech_text key\"\n\t\t}\n    }\n}\n"
+            },
+            "id": "242c9c9b-617c-46f6-bd89-a8c4a8adf8c6",
+            "name": "Structured Output Parser1",
+            "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+            "typeVersion": 1.2,
+            "position": [
+                4900,
+                2580
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o",
+                "options": {}
+            },
+            "id": "699e4b17-50cc-4826-bf6b-b43c28fc0c8f",
+            "name": "gpt40 mail",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                3940,
+                2380
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "03007a91-cd41-47ec-9ca3-a74c872d9095",
+                            "name": "voiceAnswerVoice",
+                            "value": "={{ $json.output.speech_text }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "332b0ad0-6d5c-4db3-b8cc-c0a888ecfb2e",
+                            "name": "voiceAnswerText",
+                            "value": "={{ $json.output.links }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "365d7c71-57fe-45fc-846d-6e1aeaf6171b",
+                            "name": "markdownAnswerText",
+                            "value": "={{ $json.output.formatted_markdown }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "c32c588e-9bac-41c9-800f-f566bacf60e0",
+            "name": "Task update return messages",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                5480,
+                2160
+            ]
+        },
+        {
+            "parameters": {
+                "inputText": "={{ $json.message }}",
+                "categories": {
+                    "categories": [
+                        {
+                            "category": "create task",
+                            "description": "if the message is about creating a new task or todo"
+                        },
+                        {
+                            "category": "tasks overview",
+                            "description": "if the message is about getting an overview or summary of an existing task or todo (or multiple tasks or todo's)"
+                        },
+                        {
+                            "category": "update task",
+                            "description": "if the user explicitly asks to update a task to done"
+                        }
+                    ]
+                },
+                "options": {
+                    "systemPromptTemplate": "Please classify the text provided by the user into one of the following categories: {categories}, and use the provided formatting instructions below. Don't explain, and only output the json."
+                }
+            },
+            "id": "58032f5b-7aab-4aa2-859c-24186c74e374",
+            "name": "ToDo Router",
+            "type": "@n8n/n8n-nodes-langchain.textClassifier",
+            "typeVersion": 1,
+            "position": [
+                3940,
+                1460
+            ],
+            "alwaysOutputData": false
+        },
+        {
+            "parameters": {
+                "sessionIdType": "customKey",
+                "sessionKey": "={{ $('Schema').item.json.requestID }}",
+                "contextWindowLength": 15
+            },
+            "id": "3048fb4e-304e-4d62-b055-7d0ba71ee7e9",
+            "name": "Window Buffer Memory2",
+            "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+            "typeVersion": 1.2,
+            "position": [
+                4060,
+                3480
+            ]
+        },
+        {
+            "parameters": {},
+            "id": "0751a3c6-f389-4b19-9325-62081c2c269f",
+            "name": "Auto-fixing Output Parser2",
+            "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+            "typeVersion": 1,
+            "position": [
+                4700,
+                3360
+            ]
+        },
+        {
+            "parameters": {
+                "schemaType": "manual",
+                "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"formatted_markdown\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"A fully formatted markdown string describing the answer to the userquery\"\n\t\t},\n\t\t\"speech_text\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"A short string without links, designed for speech synthesis describing the answer to the userquery in  short\"\n\t\t},\n\t\t\"task_links\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"A list of markdown links to all mentioned events that is accompanied as a text message with the speech_text\"\n\t\t}\n    }\n}\n"
+            },
+            "id": "f16910f8-06fc-46e5-904d-9d80edffc7db",
+            "name": "Structured Output Parser2",
+            "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+            "typeVersion": 1.2,
+            "position": [
+                4960,
+                3520
+            ]
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "03007a91-cd41-47ec-9ca3-a74c872d9095",
+                            "name": "voiceAnswerVoice",
+                            "value": "={{ $json.output.speech_text }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "332b0ad0-6d5c-4db3-b8cc-c0a888ecfb2e",
+                            "name": "voiceAnswerText",
+                            "value": "={{ $json.output.task_links }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "365d7c71-57fe-45fc-846d-6e1aeaf6171b",
+                            "name": "markdownAnswerText",
+                            "value": "={{ $json.output.formatted_markdown }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "d30ebc43-a570-4522-bc86-e16d089bc7ab",
+            "name": "Task update return messages2",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                5480,
+                3100
+            ]
+        },
+        {
+            "parameters": {
+                "content": "## Calendar Agent (Calendar)\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+                "height": 926.1242456603413,
+                "width": 2112.8872440911773,
+                "color": 6
+            },
+            "id": "b6dfd606-5176-42da-9af3-fd4a7400fa98",
+            "name": "Sticky Note8",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                3640,
+                2935.276891328451
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o",
+                "options": {}
+            },
+            "id": "6dd25e54-5ada-4f62-9b8c-02cdaf2cf36f",
+            "name": "gpt40 calendar",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                4000,
+                3320
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "getAll",
+                "calendar": {
+                    "__rl": true,
+                    "value": "janwillemaltink@gmail.com",
+                    "mode": "list",
+                    "cachedResultName": "Overig"
+                },
+                "options": {
+                    "timeMin": "={{$fromAI(\"date\",\"the date after which to fetch the messages in format YYYY-MM-DDTHH:MM:SS\")}}"
+                }
+            },
+            "id": "2493697a-6c74-4572-b272-92a00646e561",
+            "name": "get events",
+            "type": "n8n-nodes-base.googleCalendarTool",
+            "typeVersion": 1.2,
+            "position": [
+                4200,
+                3420
+            ],
+            "credentials": {
+                "googleCalendarOAuth2Api": {
+                    "id": "1dtW9vjUEraykGtb",
+                    "name": "Google Calendar account final"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $json.message }}",
+                "hasOutputParser": true,
+                "options": {
+                    "systemMessage": "=You are a helpful assistant.\n\nToday's date is {{ $now }}.\n\nGuidelines:\n- When summarizing calendar events, include as much info as possible.\n- if the user did not specify a date in the request assume they are asking for the upcoming week, including today"
+                }
+            },
+            "id": "40a0e79f-49a5-4442-a057-29a7fa9a2dc9",
+            "name": "Calendar agent",
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "position": [
+                4000,
+                3100
+            ],
+            "typeVersion": 1.6
+        },
+        {
+            "parameters": {
+                "sessionIdType": "customKey",
+                "sessionKey": "={{ $('Schema').item.json.requestID }}",
+                "contextWindowLength": 15
+            },
+            "id": "69a8236d-3fa8-4d4f-a868-2dc1f21e7c11",
+            "name": "Window Buffer Memory3",
+            "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+            "typeVersion": 1.2,
+            "position": [
+                3840,
+                4425
+            ]
+        },
+        {
+            "parameters": {},
+            "id": "b6a92dcf-0e28-4394-9317-8057111dfcef",
+            "name": "Auto-fixing Output Parser3",
+            "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+            "typeVersion": 1,
+            "position": [
+                4480,
+                4305
+            ]
+        },
+        {
+            "parameters": {
+                "schemaType": "manual",
+                "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"formatted_markdown\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"A fully formatted markdown string describing the answer to the userquery\"\n\t\t},\n\t\t\"speech_text\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"A short string without links, designed for speech synthesis describing the answer to the userquery in  short\"\n\t\t},\n\t\t\"task_links\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"A list of markdown links to all mentioned events that is accompanied as a text message with the speech_text\"\n\t\t}\n    }\n}\n"
+            },
+            "id": "5f756022-2ad7-4a33-8848-38e256da3ac8",
+            "name": "Structured Output Parser3",
+            "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+            "typeVersion": 1.2,
+            "position": [
+                4740,
+                4465
+            ]
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "03007a91-cd41-47ec-9ca3-a74c872d9095",
+                            "name": "voiceAnswerVoice",
+                            "value": "={{ $json.output.speech_text }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "332b0ad0-6d5c-4db3-b8cc-c0a888ecfb2e",
+                            "name": "voiceAnswerText",
+                            "value": "={{ $json.output.task_links }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "365d7c71-57fe-45fc-846d-6e1aeaf6171b",
+                            "name": "markdownAnswerText",
+                            "value": "={{ $json.output.formatted_markdown }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "9aca09ad-6c1a-4100-a4bc-e4b21f60c945",
+            "name": "Task update return messages3",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                5460,
+                4020
+            ]
+        },
+        {
+            "parameters": {
+                "content": "## General Agent (Wiki, Hackernews)\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+                "height": 926.1242456603413,
+                "width": 2112.8872440911773,
+                "color": 6
+            },
+            "id": "85f8b4af-b982-4b31-8805-4cfba41e72fa",
+            "name": "Sticky Note9",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                3640,
+                3880
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o",
+                "options": {}
+            },
+            "id": "d9ca5062-bf1c-4951-97f0-497c5eedbd1f",
+            "name": "gpt40 calendar1",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                3780,
+                4265
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "all",
+                "limit": 20,
+                "additionalFields": {
+                    "keyword": "ai"
+                }
+            },
+            "id": "0a43114e-c0d3-470c-929f-4dc43a7f7f2e",
+            "name": "Hacker News",
+            "type": "n8n-nodes-base.hackerNewsTool",
+            "typeVersion": 1,
+            "position": [
+                3980,
+                4280
+            ]
+        },
+        {
+            "parameters": {},
+            "id": "b70141f2-2885-4748-a25f-e7f70e51e0f1",
+            "name": "Wikipedia",
+            "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+            "typeVersion": 1,
+            "position": [
+                4160,
+                4380
+            ]
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $json.message }}",
+                "hasOutputParser": true,
+                "options": {
+                    "systemMessage": "=You are a helpful assistant.\n\nToday's date is {{ $now }}.\n\nGuidelines:\n- When summarizing hackernews, always include the date and time the article was created. "
+                }
+            },
+            "id": "9b3f1b68-ba76-45fb-b6d7-a9e3f2085a5b",
+            "name": "General agent",
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "position": [
+                3780,
+                4045
+            ],
+            "typeVersion": 1.6
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $json.message }}",
+                "hasOutputParser": true,
+                "options": {
+                    "systemMessage": "=You are a helpful assistant.\n\nToday's date is {{ $now }}.\n\nGuidelines:\n- When fetching emails, filter out any promotional emails. \n- When summarizing emails, include Sender, Message date, subject, and brief summary of email.\n- if the user did not specify a date in the request assume they are asking for today (from 00:00 until now)\n"
+                }
+            },
+            "id": "1e19527d-c0d6-4081-92b2-e65812de3b48",
+            "name": "Gmail agent",
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "position": [
+                3940,
+                2160
+            ],
+            "typeVersion": 1.6
+        },
+        {
+            "parameters": {
+                "resource": "file",
+                "fileId": "={{ $('Trigger - Telegram').item.json.message.photo[3].file_id }}"
+            },
+            "id": "79189450-07e3-4b10-883e-6be3c57c9c5b",
+            "name": "get_image",
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                4040,
+                360
+            ],
+            "credentials": {
+                "telegramApi": {
+                    "id": "i7hL4827cTwM5Wt9",
+                    "name": "JWA_v2_bot"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o",
+                "options": {}
+            },
+            "id": "ecd7d239-f8a1-4af9-a3f6-01e930df4f07",
+            "name": "gpt-4o - mail",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                4640,
+                2660
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o",
+                "options": {}
+            },
+            "id": "ad018a54-d7b8-497d-abab-2dd3797d9cec",
+            "name": "gpt-4o -calendar structured",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                4700,
+                3600
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o",
+                "options": {}
+            },
+            "id": "a9be8114-8e66-40de-b074-5daff0edb648",
+            "name": "gpt-4o -general structured",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                4480,
+                4545
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "jwa-bot-voice",
+                "responseMode": "responseNode",
+                "options": {}
+            },
+            "id": "484a100e-a47c-48ef-b798-ddcb946e1a87",
+            "name": "Trigger - Shortcuts",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                200,
+                2480
+            ],
+            "webhookId": "71bef7ed-fc02-4e01-afbc-52fe93abdc6d"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "dfe9b872-942b-4c42-ab2f-bafe925e45b4",
+                            "name": "message",
+                            "value": "={{ $json.body.message }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "1087bb80-976a-484b-9068-c7e4fbaead4c",
+                            "name": "trigger",
+                            "value": "shortcuts",
+                            "type": "string"
+                        },
+                        {
+                            "id": "338cdc77-426b-4044-8585-718b97918ee0",
+                            "name": "mediatype",
+                            "value": "text",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "51e98590-0eb8-4971-8932-8919cff8b7ea",
+            "name": "Schema - Shortcuts",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                1780,
+                2460
+            ]
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "dfe9b872-942b-4c42-ab2f-bafe925e45b4",
+                            "name": "message",
+                            "value": "={{ $json.message.text }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "1087bb80-976a-484b-9068-c7e4fbaead4c",
+                            "name": "trigger",
+                            "value": "telegram",
+                            "type": "string"
+                        },
+                        {
+                            "id": "fc87a06b-7fd7-478c-8411-bbaaf33a79b7",
+                            "name": "mediatype",
+                            "value": "text",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "32560bd7-7caa-4580-a57d-ce5b5b4e0248",
+            "name": "Schema - Telegram",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                1780,
+                2160
+            ]
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "dfe9b872-942b-4c42-ab2f-bafe925e45b4",
+                            "name": "message",
+                            "value": "={{ $json.text }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "1087bb80-976a-484b-9068-c7e4fbaead4c",
+                            "name": "trigger",
+                            "value": "telegram",
+                            "type": "string"
+                        },
+                        {
+                            "id": "c01ea5e8-152f-4d2e-a268-949867e845dc",
+                            "name": "mediatype",
+                            "value": "voice",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "03853208-759e-4e89-81e6-60c84b3ddeb7",
+            "name": "Schema - Telegram-voice",
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                1780,
+                1920
+            ]
+        },
+        {
+            "parameters": {
+                "updates": [
+                    "message"
+                ],
+                "additionalFields": {}
+            },
+            "id": "1d66babc-bb08-46bb-b9a8-cd788543cf4d",
+            "name": "Trigger - Telegram",
+            "type": "n8n-nodes-base.telegramTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                180,
+                1940
+            ],
+            "webhookId": "ef01a524-ab1d-4f84-8bcd-6d9d53158021",
+            "credentials": {
+                "telegramApi": {
+                    "id": "i7hL4827cTwM5Wt9",
+                    "name": "JWA_v2_bot"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "text": "=I will provide you with a message. Your sole task is to analyse the message, and based on it's content and context, create a task\n\nMessage: {{ $json.message }}",
+                "attributes": {
+                    "attributes": [
+                        {
+                            "name": "task",
+                            "description": "The extracted task",
+                            "required": true
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "60893928-1a16-424b-8325-694e42eb0c21",
+            "name": "Extract Task",
+            "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+            "typeVersion": 1,
+            "position": [
+                4560,
+                1140
+            ]
+        },
+        {
+            "parameters": {
+                "text": "=I will provide you with a current date and time, and a message. Your sole task is to analyse the message, and based on it's content and context, create an ISO formatted date (eventDate) and a formal relevant event name (eventName)\n\nCurrent Date and Time: {{ $json.currentDate }}\nMessage: {{ $json.message }}",
+                "attributes": {
+                    "attributes": [
+                        {
+                            "name": "eventDate",
+                            "description": "The extracted date & time in ISO Format (GMT +1)",
+                            "required": true
+                        },
+                        {
+                            "name": "eventName",
+                            "description": "The extracted eventName",
+                            "required": true
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "aac56dac-27d2-4399-b9cc-c2471ef5b14b",
+            "name": "Extract Reminder",
+            "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+            "typeVersion": 1,
+            "position": [
+                4020,
+                780
+            ],
+            "retryOnFail": true
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-mini",
+                "options": {}
+            },
+            "id": "28f479fd-89b4-4242-ba7e-63064e93f8a3",
+            "name": "4o Mini1 - create-tasks",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                4580,
+                1360
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "nK48puZzt2QuaQuu",
+                    "name": "OpenAi account"
+                }
+            }
+        }
+    ],
+    "pinData": {},
+    "connections": {
+        "Filter own messages": {
+            "main": [
+                [
+                    {
+                        "node": "Pictures?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Pictures?": {
+            "main": [
+                [
+                    {
+                        "node": "If",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Audio?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Audio?": {
+            "main": [
+                [
+                    {
+                        "node": "Get Voice File",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Schema - Telegram",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Voice File": {
+            "main": [
+                [
+                    {
+                        "node": "Speech to Text",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Speech to Text": {
+            "main": [
+                [
+                    {
+                        "node": "Schema - Telegram-voice",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Schema": {
+            "main": [
+                [
+                    {
+                        "node": "Text Classifier",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "gpt-4o-mini": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Text Classifier",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "4o Mini (reminder)": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Extract Reminder",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Calendar": {
+            "main": [
+                [
+                    {
+                        "node": "Date & Time",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Date & Time": {
+            "main": [
+                [
+                    {
+                        "node": "Reminder Return Messages",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Notion": {
+            "main": [
+                [
+                    {
+                        "node": "Task extraction return messages",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Verstuur Voicememo": {
+            "main": [
+                [
+                    {
+                        "node": "Verstuur text",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Return Messages Mapping": {
+            "main": [
+                [
+                    {
+                        "node": "telegram?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI": {
+            "main": [
+                [
+                    {
+                        "node": "Verstuur Voicememo",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "4o-mini tasks": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "ToDo Router",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get tasks": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "Todo agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Window Buffer Memory": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "Todo agent",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "4o todo": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Todo agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Auto-fixing Output Parser": {
+            "ai_outputParser": [
+                [
+                    {
+                        "node": "Todo agent",
+                        "type": "ai_outputParser",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Structured Output Parser": {
+            "ai_outputParser": [
+                [
+                    {
+                        "node": "Auto-fixing Output Parser",
+                        "type": "ai_outputParser",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "gpt-4o": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Auto-fixing Output Parser",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update single task": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "Todo agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "If": {
+            "main": [
+                [
+                    {
+                        "node": "add caption",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Edit Fields",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "map captions": {
+            "main": [
+                [
+                    {
+                        "node": "get_image",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "add caption": {
+            "main": [
+                [
+                    {
+                        "node": "map captions",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Edit Image": {
+            "main": [
+                [
+                    {
+                        "node": "OpenAI1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "telegram?": {
+            "main": [
+                [
+                    {
+                        "node": "No voice?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI1": {
+            "main": [
+                [
+                    {
+                        "node": "mapImageAnswer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "No voice?": {
+            "main": [
+                [
+                    {
+                        "node": "Telegram",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "OpenAI",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "mapImageAnswer": {
+            "main": [
+                [
+                    {
+                        "node": "Telegram",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Edit Fields": {
+            "main": [
+                [
+                    {
+                        "node": "map captions",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Text Classifier": {
+            "main": [
+                [
+                    {
+                        "node": "Extract Reminder",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "ToDo Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Gmail agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Calendar agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "General agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Email": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "Gmail agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Gmail create draft": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "Gmail agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Window Buffer Memory1": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "Gmail agent",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Todo agent": {
+            "main": [
+                [
+                    {
+                        "node": "Task update return messages1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Auto-fixing Output Parser1": {
+            "ai_outputParser": [
+                [
+                    {
+                        "node": "Gmail agent",
+                        "type": "ai_outputParser",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Structured Output Parser1": {
+            "ai_outputParser": [
+                [
+                    {
+                        "node": "Auto-fixing Output Parser1",
+                        "type": "ai_outputParser",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "gpt40 mail": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Gmail agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "ToDo Router": {
+            "main": [
+                [
+                    {
+                        "node": "Extract Task",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Todo agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Todo agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Window Buffer Memory2": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "Calendar agent",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Auto-fixing Output Parser2": {
+            "ai_outputParser": [
+                [
+                    {
+                        "node": "Calendar agent",
+                        "type": "ai_outputParser",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Structured Output Parser2": {
+            "ai_outputParser": [
+                [
+                    {
+                        "node": "Auto-fixing Output Parser2",
+                        "type": "ai_outputParser",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "gpt40 calendar": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Calendar agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "get events": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "Calendar agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Task update return messages2": {
+            "main": [
+                [
+                    {
+                        "node": "Return Messages Mapping",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Calendar agent": {
+            "main": [
+                [
+                    {
+                        "node": "Task update return messages2",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Task update return messages": {
+            "main": [
+                [
+                    {
+                        "node": "Return Messages Mapping",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Task update return messages1": {
+            "main": [
+                [
+                    {
+                        "node": "Return Messages Mapping",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Task extraction return messages": {
+            "main": [
+                [
+                    {
+                        "node": "Return Messages Mapping",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Reminder Return Messages": {
+            "main": [
+                [
+                    {
+                        "node": "Return Messages Mapping",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Window Buffer Memory3": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "General agent",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Auto-fixing Output Parser3": {
+            "ai_outputParser": [
+                [
+                    {
+                        "node": "General agent",
+                        "type": "ai_outputParser",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Structured Output Parser3": {
+            "ai_outputParser": [
+                [
+                    {
+                        "node": "Auto-fixing Output Parser3",
+                        "type": "ai_outputParser",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "gpt40 calendar1": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "General agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Hacker News": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "General agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wikipedia": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "General agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "General agent": {
+            "main": [
+                [
+                    {
+                        "node": "Task update return messages3",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Task update return messages3": {
+            "main": [
+                [
+                    {
+                        "node": "Return Messages Mapping",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Gmail agent": {
+            "main": [
+                [
+                    {
+                        "node": "Task update return messages",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "get_image": {
+            "main": [
+                [
+                    {
+                        "node": "Edit Image",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "gpt-4o - mail": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Auto-fixing Output Parser1",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "gpt-4o -calendar structured": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Auto-fixing Output Parser2",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "gpt-4o -general structured": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Auto-fixing Output Parser3",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Trigger - Shortcuts": {
+            "main": [
+                [
+                    {
+                        "node": "Schema - Shortcuts",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Schema - Shortcuts": {
+            "main": [
+                [
+                    {
+                        "node": "Schema",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Schema - Telegram": {
+            "main": [
+                [
+                    {
+                        "node": "Schema",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Schema - Telegram-voice": {
+            "main": [
+                [
+                    {
+                        "node": "Schema",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Trigger - Telegram": {
+            "main": [
+                [
+                    {
+                        "node": "Filter own messages",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract Task": {
+            "main": [
+                [
+                    {
+                        "node": "Notion",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract Reminder": {
+            "main": [
+                [
+                    {
+                        "node": "Google Calendar",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "4o Mini1 - create-tasks": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Extract Task",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": true,
+    "settings": {
+        "executionOrder": "v1",
+        "saveManualExecutions": true,
+        "callerPolicy": "workflowsFromSameOwner"
+    },
+    "versionId": "ac0472e9-20fd-430f-a123-06a6d956c243",
+    "meta": {
+        "templateCredsSetupCompleted": true,
+        "instanceId": "e9a5ab4832eff7caedc1ec9071cacaf2c55cbb86c978e16a74c55dc04f0c9f33"
+    },
+    "id": "SboRP1RcKZJJwdU1",
+    "tags": [
+        {
+            "createdAt": "2024-10-29T01:01:16.716Z",
+            "updatedAt": "2024-10-29T01:01:16.716Z",
+            "id": "WPLjQLWTVLzTzs3w",
+            "name": "ai"
+        }
+    ]
+}

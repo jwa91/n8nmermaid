@@ -1,0 +1,33 @@
+[project]
+name = "n8nmermaid"
+version = "0.3.0"
+description = "Converts n8n workflow JSON files to Mermaid flowchart syntax."
+authors = [
+    { name = "Jan Willem Altink", email = "n8nmermaid@janwillemaltink.com" }
+]
+readme = "README.md"
+requires-python = ">= 3.11"
+dependencies = [
+    "python-dotenv",
+    "pydantic",
+    "typer",
+    "fastapi>=0.115.12",
+    "uvicorn>=0.34.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff"
+]
+
+[project.scripts]
+n8nmermaid = "n8nmermaid.cli.main:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.11.7",
+]
