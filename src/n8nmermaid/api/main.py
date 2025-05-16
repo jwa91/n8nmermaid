@@ -2,14 +2,13 @@
 """Main FastAPI application setup."""
 
 import logging
-import os
 from contextlib import asynccontextmanager
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from dotenv import load_dotenv
 
 from n8nmermaid.core.orchestrator_v2 import OrchestratorErrorV2
 from n8nmermaid.utils.logging import setup_logging
@@ -29,12 +28,13 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": "Validation Error", "errors": error_details},
     )
 
+
 async def orchestrator_exception_handler(request: Request, exc: OrchestratorErrorV2):
     """Handles errors originating from the V2 core orchestration."""
     logger.error("OrchestratorErrorV2 caught: %s", exc, exc_info=False)
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
-        content={"detail": f"Analysis Error: {exc}"}
+        content={"detail": f"Analysis Error: {exc}"},
     )
 
 
@@ -45,6 +45,7 @@ async def generic_exception_handler(request: Request, exc: Exception):
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"detail": f"Internal Server Error: {exc}"},
     )
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -68,29 +69,14 @@ def create_app() -> FastAPI:
         description="API for analyzing n8n workflows and generating Mermaid diagrams"
         + " or reports.",
         version="2.0.0",
-        lifespan=lifespan
+        lifespan=lifespan,
     )
 
-    allowed_origins = [
-        "https://n8nmermaid.janwillemaltink.com",
-    ]
-
-    environment = os.getenv("ENVIRONMENT", "production").lower()
-
-    if environment == "development":
-        development_origins = [
-            "http://localhost",
-            "http://localhost:8080",
-            "http://localhost:3000",
-            "http://localhost:5173",
-        ]
-        allowed_origins.extend(development_origins)
-
-
+    # CORS configuration - allowing all origins
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=allowed_origins,
-        allow_credentials=True,
+        allow_origins=["*"],
+        allow_credentials=False,
         allow_methods=["*"],
         allow_headers=["*"],
     )
@@ -113,8 +99,9 @@ def create_app() -> FastAPI:
     @app.get("/", tags=["Status"], summary="API Root/Health Check")
     async def read_root():
         """Provides a basic status message for the API root."""
-        return {"message": "n8n-mermaid API V2 is running." }
+        return {"message": "n8n-mermaid API V2 is running."}
 
     return app
+
 
 app = create_app()
