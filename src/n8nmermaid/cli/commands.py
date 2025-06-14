@@ -13,6 +13,7 @@ from n8nmermaid.models_v2.request_v2_models import (
     MermaidGenerationParamsV2,
     ReportGenerationParamsV2,
 )
+from n8nmermaid.utils.logging import setup_logging
 
 from .enums import (
     CliMermaidDirection,
@@ -21,8 +22,18 @@ from .enums import (
     CliSubgraphDisplayMode,
 )
 from .helpers import run_orchestration_v2
-from .main import app
 
+app = typer.Typer(
+    name="n8nmermaid",
+    help="Analyzes n8n workflow JSON files and generates Mermaid diagrams or reports.",
+    add_completion=False,
+)
+
+
+@app.callback()
+def main_callback():
+    """Main entry point setup. Called before any command. Configures logging."""
+    setup_logging()
 
 @app.command("mermaid")
 def generate_mermaid_diagram_v2(
