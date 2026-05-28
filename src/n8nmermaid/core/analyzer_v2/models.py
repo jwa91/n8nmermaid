@@ -2,7 +2,7 @@
 """Pydantic models defining the structured results of workflow analysis (V2)."""
 
 import logging
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 # --- Enums ---
 
 
-class NodeGroupType(str, Enum):
+class NodeGroupType(StrEnum):
     """Categorization of nodes based on function and connectivity."""
 
     TRIGGER = "Trigger"
@@ -30,7 +30,7 @@ class NodeGroupType(str, Enum):
     UNKNOWN = "Unknown"
 
 
-class ClusterRole(str, Enum):
+class ClusterRole(StrEnum):
     """Role of a node within a non-main connection cluster."""
 
     ROOT = "Root"

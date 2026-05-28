@@ -3,7 +3,6 @@
 
 import logging
 
-from .constants import N8N_CONNECTION_TYPE_MAIN
 from n8nmermaid.core.analyzer_v2.models import (
     AnalyzedNodeV2,
     NodeGroupType,
@@ -11,7 +10,7 @@ from n8nmermaid.core.analyzer_v2.models import (
 )
 from n8nmermaid.models_v2.request_v2_models import MermaidGenerationParamsV2
 
-from .constants import END_SYMBOL_SUFFIX, START_SYMBOL_SUFFIX
+from .constants import END_SYMBOL_SUFFIX, N8N_CONNECTION_TYPE_MAIN, START_SYMBOL_SUFFIX
 from .helpers import (
     format_node_definition,
     format_node_label,
@@ -73,9 +72,7 @@ def _define_one_subgraph(
         ),
     )
 
-    logger.debug(
-        "Defining %d sub-nodes for cluster %s", len(sub_nodes), root_id
-    )
+    logger.debug("Defining %d sub-nodes for cluster %s", len(sub_nodes), root_id)
     for sub_node in sub_nodes:
         sub_label = format_node_label(sub_node, params)
         sub_shape = get_mermaid_shape(sub_node)
@@ -100,21 +97,15 @@ def _define_one_subgraph(
                     if connection.connection_type == N8N_CONNECTION_TYPE_MAIN
                     else "-.->"
                 )
-                label_parts = get_connection_label_parts(
-                    source_node, connection
-                )
-                label_str = (
-                    f'|"{" ".join(label_parts)}"|' if label_parts else ""
-                )
+                label_parts = get_connection_label_parts(source_node, connection)
+                label_str = f'|"{" ".join(label_parts)}"|' if label_parts else ""
                 link = f"{member_id} {arrow}{label_str} {target_id}"
                 subgraph_connections.add(link)
 
     if subgraph_connections:
         subgraph_defs.append("")
         subgraph_defs.append("    %% Internal Connections")
-        subgraph_defs.extend(
-            [f"    {conn}" for conn in sorted(subgraph_connections)]
-        )
+        subgraph_defs.extend([f"    {conn}" for conn in sorted(subgraph_connections)])
 
     subgraph_defs.append("end")
     subgraph_defs.append("")
@@ -264,12 +255,10 @@ def define_nodes_and_subgraphs(
         analysis.nodes.keys(),
         key=lambda nid: (
             analysis.nodes[nid].position[1]
-            if analysis.nodes[nid].position
-            and len(analysis.nodes[nid].position) > 1
+            if analysis.nodes[nid].position and len(analysis.nodes[nid].position) > 1
             else 0,
             analysis.nodes[nid].position[0]
-            if analysis.nodes[nid].position
-            and len(analysis.nodes[nid].position) > 0
+            if analysis.nodes[nid].position and len(analysis.nodes[nid].position) > 0
             else 0,
             nid,
         ),
@@ -339,9 +328,7 @@ def define_nodes_and_subgraphs(
     )
 
 
-def define_start_end_symbols(
-    trigger_ids: list[str], end_ids: list[str]
-) -> list[str]:
+def define_start_end_symbols(trigger_ids: list[str], end_ids: list[str]) -> list[str]:
     """
     Generates definitions for dedicated Start and End symbols (V2).
 

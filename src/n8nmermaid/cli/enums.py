@@ -1,10 +1,10 @@
 # src/n8nmermaid/cli/enums.py
 """Defines Enumerations used for Typer CLI choices."""
 
-from enum import Enum
+from enum import StrEnum
 
 
-class CliMermaidDirection(str, Enum):
+class CliMermaidDirection(StrEnum):
     """CLI choices for Mermaid diagram direction."""
 
     TD = "TD"
@@ -14,7 +14,7 @@ class CliMermaidDirection(str, Enum):
     BT = "BT"
 
 
-class CliSubgraphDisplayMode(str, Enum):
+class CliSubgraphDisplayMode(StrEnum):
     """CLI choices for how to display subgraphs/clusters."""
 
     SUBGRAPH = "subgraph"
@@ -22,7 +22,7 @@ class CliSubgraphDisplayMode(str, Enum):
     SEPARATE_CLUSTERS = "separate_clusters"
 
 
-class CliReportType(str, Enum):
+class CliReportType(StrEnum):
     """CLI choices for report types."""
 
     STATS = "stats"
@@ -32,7 +32,7 @@ class CliReportType(str, Enum):
     NODE_PARAMETERS = "node_parameters"
 
 
-class CliReportFormat(str, Enum):
+class CliReportFormat(StrEnum):
     """CLI choices for report output formats."""
 
     TEXT = "text"

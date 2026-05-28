@@ -23,9 +23,12 @@ from n8nmermaid.models_v2.request_v2_models import (
 logger = logging.getLogger(__name__)
 
 
-class OrchestratorErrorV2(Exception):
+class OrchestratorV2Error(Exception):
     """Custom exception for failures within the V2 orchestration process."""
-    pass
+
+
+# Backward-compatible public alias; older callers import OrchestratorErrorV2.
+OrchestratorErrorV2 = OrchestratorV2Error
 
 
 class OrchestratorV2:
@@ -68,7 +71,7 @@ class OrchestratorV2:
             serialized V2 analysis data.
 
         Raises:
-            OrchestratorErrorV2: If a critical step fails. # <-- Docstring bijgewerkt
+            OrchestratorErrorV2: If a critical step fails.
         """
         logger.info("Processing V2 request command: %s", self.request.command)
 
@@ -140,9 +143,7 @@ class OrchestratorV2:
                             raise OrchestratorErrorV2(
                                 "Report type 'analysis_json' cannot be combined."
                             )
-                        logger.debug(
-                            "Serializing WorkflowAnalysisV2 object to JSON..."
-                        )
+                        logger.debug("Serializing WorkflowAnalysisV2 object to JSON...")
                         output = analysis_result.model_dump_json(indent=2)
                     else:
                         try:
@@ -150,9 +151,7 @@ class OrchestratorV2:
                             report_generator = ReportGeneratorV2(
                                 analysis=analysis_result, params=report_params
                             )
-                            logger.debug(
-                                "Generating combined V2 report string..."
-                            )
+                            logger.debug("Generating combined V2 report string...")
                             output = report_generator.generate()
                         except ReportGeneratorError as rge:
                             logger.error("ReportGeneratorV2 failed: %s", rge)
@@ -199,14 +198,12 @@ def process_v2(request: AnalysisRequestV2) -> str | dict[str, str]:
         The generated output (Mermaid diagram dict, report string, etc.).
 
     Raises:
-        OrchestratorErrorV2: If the orchestration process fails. # <-- Docstring bijgewerkt
+        OrchestratorErrorV2: If the orchestration process fails.
         TypeError: If input types are incorrect.
     """
     try:
         orchestrator = OrchestratorV2(request=request)
         return orchestrator.process_request()
     except (TypeError, OrchestratorErrorV2) as e:
-        logger.error(
-            "Failed to process V2 request via functional interface: %s", e
-        )
+        logger.error("Failed to process V2 request via functional interface: %s", e)
         raise

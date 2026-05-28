@@ -3,7 +3,6 @@
 
 import logging
 
-from .constants import N8N_CONNECTION_TYPE_MAIN
 from n8nmermaid.core.analyzer_v2.models import (
     AnalyzedNodeV2,
     ConnectionDetail,
@@ -11,7 +10,7 @@ from n8nmermaid.core.analyzer_v2.models import (
 )
 from n8nmermaid.models_v2.request_v2_models import MermaidGenerationParamsV2
 
-from .constants import END_SYMBOL_SUFFIX, START_SYMBOL_SUFFIX
+from .constants import END_SYMBOL_SUFFIX, N8N_CONNECTION_TYPE_MAIN, START_SYMBOL_SUFFIX
 from .helpers import get_connection_label_parts, get_display_ids_and_context
 
 logger = logging.getLogger(__name__)
@@ -84,11 +83,7 @@ def _process_single_connection(
         )
         return None
 
-    arrow = (
-        "-->"
-        if connection.connection_type == N8N_CONNECTION_TYPE_MAIN
-        else "-.->"
-    )
+    arrow = "-->" if connection.connection_type == N8N_CONNECTION_TYPE_MAIN else "-.->"
     label_parts = get_connection_label_parts(source_node, connection)
     label_str = f'|"{" ".join(label_parts)}"|' if label_parts else ""
 
