@@ -18,8 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 async def run_api_orchestration_v2(
-    request_body: ApiMermaidRequest | ApiReportRequest,
-    command: RequestCommand
+    request_body: ApiMermaidRequest | ApiReportRequest, command: RequestCommand
 ) -> str | dict[str, str]:
     """
     Runs the V2 orchestration process based on API request data.
@@ -48,8 +47,10 @@ async def run_api_orchestration_v2(
     elif isinstance(request_body, ApiReportRequest):
         report_params = request_body.params
     else:
-        logger.error("Invalid request body type passed to API helper: %s",
-                  type(request_body).__name__)
+        logger.error(
+            "Invalid request body type passed to API helper: %s",
+            type(request_body).__name__,
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error: Invalid request data.",
@@ -59,8 +60,9 @@ async def run_api_orchestration_v2(
         analysis_request = AnalysisRequestV2(
             workflow_data=request_body.workflow_data,
             command=command,
-            mermaid_params=mermaid_params if mermaid_params is not None
-                       else MermaidGenerationParamsV2(),
+            mermaid_params=mermaid_params
+            if mermaid_params is not None
+            else MermaidGenerationParamsV2(),
             report_params=report_params,
         )
         logger.debug("Constructed AnalysisRequestV2, calling process_v2...")
@@ -76,8 +78,9 @@ async def run_api_orchestration_v2(
             status_code=status.HTTP_400_BAD_REQUEST, detail=f"Analysis Error: {e}"
         ) from e
     except ValueError as e:
-        logger.error("Validation error during API request processing: %s",
-                  e, exc_info=True)
+        logger.error(
+            "Validation error during API request processing: %s", e, exc_info=True
+        )
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"Invalid input: {e}",

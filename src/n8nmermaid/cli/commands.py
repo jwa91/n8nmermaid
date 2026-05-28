@@ -35,6 +35,7 @@ def main_callback():
     """Main entry point setup. Called before any command. Configures logging."""
     setup_logging()
 
+
 @app.command("mermaid")
 def generate_mermaid_diagram_v2(
     filepath: Annotated[
@@ -208,9 +209,7 @@ def serve_api(
     ] = 8000,
     reload: Annotated[
         bool,
-        typer.Option(
-            "--reload", help="Enable auto-reload for development."
-        ),
+        typer.Option("--reload", help="Enable auto-reload for development."),
     ] = False,
 ):
     """
@@ -243,9 +242,6 @@ def serve_api(
         typer.echo("\nServer stopped.")
         raise typer.Exit() from None
     except Exception as e:
-        err_msg = (
-            "An unexpected error occurred while trying to start the "
-            f"server: {e}"
-        )
+        err_msg = f"An unexpected error occurred while trying to start the server: {e}"
         typer.echo(err_msg, err=True)
         raise typer.Exit(code=1) from e

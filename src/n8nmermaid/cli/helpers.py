@@ -52,9 +52,7 @@ def _load_workflow_data(filepath: Path) -> dict[str, Any]:
             raise typer.Exit(code=1)
         return workflow_data
     except Exception as e:
-        logger.critical(
-            "Failed during workflow file loading from %s: %s", filepath, e
-        )
+        logger.critical("Failed during workflow file loading from %s: %s", filepath, e)
         typer.echo(
             f"Error: Could not load workflow file: {filepath}. Reason: {e}",
             err=True,
@@ -85,9 +83,7 @@ def _build_analysis_request(
         return request
     except Exception as e:
         logger.error("Failed to create AnalysisRequestV2: %s", e, exc_info=True)
-        typer.echo(
-            f"Error: Invalid parameters for request construction: {e}", err=True
-        )
+        typer.echo(f"Error: Invalid parameters for request construction: {e}", err=True)
         raise typer.Exit(code=1) from e
 
 
@@ -111,9 +107,7 @@ def _handle_mermaid_output(result: str | dict[str, str], output_dir: Path | None
             logger.warning(
                 "OrchestratorV2 returned dict, but 'main' key missing/empty."
             )
-            typer.echo(
-                "Error: Failed to retrieve main diagram content.", err=True
-            )
+            typer.echo("Error: Failed to retrieve main diagram content.", err=True)
             raise typer.Exit(code=1)
 
 
@@ -213,9 +207,7 @@ def save_diagrams_to_dir(diagrams: dict[str, str], output_dir: Path):
                 logger.debug("Saved diagram to %s", output_file)
                 saved_files += 1
             except OSError as io_err:
-                logger.error(
-                    "Failed to write diagram file %s: %s", output_file, io_err
-                )
+                logger.error("Failed to write diagram file %s: %s", output_file, io_err)
                 typer.echo(f"Error: Could not write file {output_file}", err=True)
                 write_errors += 1
 
@@ -244,12 +236,9 @@ def save_diagrams_to_dir(diagrams: dict[str, str], output_dir: Path):
             raise typer.Exit(code=1)
 
     except Exception as dir_err:
-        logger.exception(
-            "Failed to create or write to output directory %s", output_dir
-        )
+        logger.exception("Failed to create or write to output directory %s", output_dir)
         typer.echo(
-            f"Error: Could not use output directory {output_dir}. "
-            f"Reason: {dir_err}",
+            f"Error: Could not use output directory {output_dir}. Reason: {dir_err}",
             err=True,
         )
         raise typer.Exit(code=1) from dir_err

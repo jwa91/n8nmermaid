@@ -32,6 +32,7 @@ class MermaidGenerationParamsV2(BaseModel):
 
     class Config:
         """Pydantic configuration"""
+
         extra = "forbid"
 
 
@@ -55,6 +56,7 @@ class ReportGenerationParamsV2(BaseModel):
 
     class Config:
         """Pydantic configuration"""
+
         extra = "forbid"
 
 
@@ -72,6 +74,7 @@ class AnalysisRequestV2(BaseModel):
 
     class Config:
         """Pydantic configuration"""
+
         arbitrary_types_allowed = True
         validate_assignment = True
         extra = "ignore"

@@ -12,7 +12,6 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 
-
 def load_workflow_from_file(filepath: Path) -> dict[str, Any] | None:
     """
     Loads and parses the n8n workflow JSON file from the given path.
@@ -33,7 +32,7 @@ def load_workflow_from_file(filepath: Path) -> dict[str, Any] | None:
 
     try:
         # Ensure correct encoding and handle potential BOM
-        with open(filepath, encoding='utf-8-sig') as f:
+        with open(filepath, encoding="utf-8-sig") as f:
             # Read the entire content first (though for large files consider streaming)
             content = f.read()
             # Now parse the content using json.loads
@@ -42,21 +41,23 @@ def load_workflow_from_file(filepath: Path) -> dict[str, Any] | None:
             if not isinstance(workflow, dict):
                 logger.error(
                     "Error: Expected JSON object at the top level in %s, got %s.",
-                    filepath, type(workflow).__name__
+                    filepath,
+                    type(workflow).__name__,
                 )
                 return None
 
             logger.info(
                 "Successfully loaded workflow '%s' from %s",
-                workflow.get('name', 'Unnamed'), filepath
+                workflow.get("name", "Unnamed"),
+                filepath,
             )
             return workflow
     except json.JSONDecodeError as e:
         logger.error("Error: Invalid JSON in %s. Details: %s", filepath, e)
         return None
-    except FileNotFoundError: # Should be caught by is_file, but good practice
-         logger.error("Workflow file not found at: %s", filepath)
-         return None
-    except Exception as e: # Catch other potential errors like permission issues
+    except FileNotFoundError:  # Should be caught by is_file, but good practice
+        logger.error("Workflow file not found at: %s", filepath)
+        return None
+    except Exception as e:  # Catch other potential errors like permission issues
         logger.exception("Unexpected error loading workflow %s: %s", filepath, e)
         return None

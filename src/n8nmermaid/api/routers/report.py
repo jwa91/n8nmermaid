@@ -37,17 +37,21 @@ Returns the generated report content as a single string
 (or JSON string if `analysis_json` is requested).
 """,
     responses={
-        status.HTTP_400_BAD_REQUEST: {"model": ApiErrorDetail,
-                               "description": "Analysis or Orchestration Error"},
-        status.HTTP_422_UNPROCESSABLE_ENTITY: {"model": ApiErrorDetail,
-                                         "description": "Invalid Input Data"},
-        status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": ApiErrorDetail,
-                                          "description": "Internal Server Error"},
+        status.HTTP_400_BAD_REQUEST: {
+            "model": ApiErrorDetail,
+            "description": "Analysis or Orchestration Error",
+        },
+        status.HTTP_422_UNPROCESSABLE_ENTITY: {
+            "model": ApiErrorDetail,
+            "description": "Invalid Input Data",
+        },
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {
+            "model": ApiErrorDetail,
+            "description": "Internal Server Error",
+        },
     },
 )
-async def generate_report_endpoint(
-    request_body: ApiReportRequest
-) -> ApiReportResponse:
+async def generate_report_endpoint(request_body: ApiReportRequest) -> ApiReportResponse:
     """
     Handles requests to generate analysis reports.
 
@@ -67,8 +71,9 @@ async def generate_report_endpoint(
         )
 
         if not isinstance(result, str):
-            logger.error("Report generation returned unexpected type: %s",
-                      type(result).__name__)
+            logger.error(
+                "Report generation returned unexpected type: %s", type(result).__name__
+            )
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Internal server error: "

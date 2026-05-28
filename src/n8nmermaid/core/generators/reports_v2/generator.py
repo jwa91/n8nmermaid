@@ -128,9 +128,7 @@ class ReportGeneratorV2:
                 ) from e
 
         if not all_report_strings:
-            logger.warning(
-                "No V2 report parts were generated for requested types."
-            )
+            logger.warning("No V2 report parts were generated for requested types.")
             return "No report content generated."
 
         return report_separator.join(all_report_strings)

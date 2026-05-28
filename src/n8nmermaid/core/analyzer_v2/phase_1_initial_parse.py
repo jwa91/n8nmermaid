@@ -98,7 +98,7 @@ def parse_initial_nodes(
     invalid_or_duplicate_count = 0
 
     for i, node_data in enumerate(raw_nodes_list):
-        node_name_default = f"Unnamed_Node_{i+1}"
+        node_name_default = f"Unnamed_Node_{i + 1}"
         if not isinstance(node_data, dict):
             warnings.append(f"Skipping non-dictionary item in nodes list at index {i}.")
             invalid_or_duplicate_count += 1

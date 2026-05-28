@@ -166,9 +166,7 @@ def generate_agents_data_v2(analysis: WorkflowAnalysisV2) -> AgentsReportData:
 
     for node in analysis.nodes.values():
         if node.classification.group_type == NodeGroupType.CLUSTER_ROOT:
-            agent_model, model_creds = _find_connected_llm_details(
-                node, analysis.nodes
-            )
+            agent_model, model_creds = _find_connected_llm_details(node, analysis.nodes)
             tools_list = _find_connected_tools(node, analysis.nodes)
             system_message = _find_system_message(node)
 

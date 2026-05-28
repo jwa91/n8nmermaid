@@ -21,8 +21,7 @@ def _log_missing_connection_node(
     context = ""
     if source_name_context and target_name_context:
         context = (
-            f"Connection from '{source_name_context}' to "
-            f"'{target_name_context}': "
+            f"Connection from '{source_name_context}' to '{target_name_context}': "
         )
     elif source_name_context:
         context = f"Connection from '{source_name_context}': "

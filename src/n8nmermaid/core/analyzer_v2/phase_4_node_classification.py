@@ -13,9 +13,7 @@ def _is_potential_router(node: AnalyzedNodeV2) -> bool:
     """Check if a node acts as a router based on outgoing main ports."""
     main_output_ports_used = set()
     for conn in node.connectivity.outgoing_connections:
-        if conn.connection_type == "main" and conn.source_port_name.startswith(
-            "main_"
-        ):
+        if conn.connection_type == "main" and conn.source_port_name.startswith("main_"):
             main_output_ports_used.add(conn.source_port_name)
     # If more than one distinct main output port (e.g., main_0, main_1) is used
     return len(main_output_ports_used) > 1
@@ -82,9 +80,7 @@ def classify_nodes(nodes_dict: dict[str, AnalyzedNodeV2]) -> list[str]:
                 group_type = NodeGroupType.ACTION
 
         node.classification.group_type = group_type
-        classification_counts[group_type] = (
-            classification_counts.get(group_type, 0) + 1
-        )
+        classification_counts[group_type] = classification_counts.get(group_type, 0) + 1
         logger.debug(
             "Classified node %s (%s) as Group: %s, IsEndNode: %s",
             node_id,

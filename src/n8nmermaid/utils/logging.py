@@ -37,8 +37,7 @@ def setup_logging():
     logging_target = os.getenv("LOGGING_TARGET", "FILE").upper()
     if logging_target not in ["CONSOLE", "FILE"]:
         print(
-            f"Warning: Invalid LOGGING_TARGET '{logging_target}'. "
-            "Defaulting to FILE.",
+            f"Warning: Invalid LOGGING_TARGET '{logging_target}'. Defaulting to FILE.",
             file=sys.stderr,
         )
         logging_target = "FILE"

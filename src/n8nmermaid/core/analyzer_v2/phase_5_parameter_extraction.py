@@ -9,9 +9,7 @@ from .models import AnalyzedNodeV2
 logger = logging.getLogger(__name__)
 
 
-def _flatten_dict(
-    data: Any, parent_key: str = "", sep: str = "."
-) -> dict[str, Any]:
+def _flatten_dict(data: Any, parent_key: str = "", sep: str = ".") -> dict[str, Any]:
     """
     Recursively flattens a nested dictionary or list structure.
 

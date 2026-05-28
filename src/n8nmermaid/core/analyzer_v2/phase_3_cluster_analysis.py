@@ -125,7 +125,7 @@ def analyze_clusters(nodes_dict: dict[str, AnalyzedNodeV2]) -> list[str]:
                         "Analysis might be ambiguous."
                     )
                     logger.warning(
-                        "Node %s seems connected to multiple " "cluster roots.",
+                        "Node %s seems connected to multiple cluster roots.",
                         neighbor_id,
                     )
                     continue

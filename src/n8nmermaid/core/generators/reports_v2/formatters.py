@@ -32,9 +32,7 @@ def _format_stats_report_text(data: StatsReportData) -> str:
     lines.append(f"- Identified Cluster Roots: {data.cluster_roots}")
     lines.append("\n### Nodes by Type:")
     if data.nodes_by_type:
-        sorted_types = sorted(
-            data.nodes_by_type, key=lambda x: (-x.count, x.node_type)
-        )
+        sorted_types = sorted(data.nodes_by_type, key=lambda x: (-x.count, x.node_type))
         for item in sorted_types:
             lines.append(f"  - {item.node_type}: {item.count}")
     else:

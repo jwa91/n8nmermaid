@@ -131,7 +131,7 @@ def format_node_label(node: AnalyzedNodeV2, params: MermaidGenerationParamsV2) -
     if extra_info:
         safe_base = sanitize_mermaid_label(base_label)
         safe_extras = [sanitize_mermaid_label(info) for info in extra_info]
-        return f'{safe_base}<br/>{"<br/>".join(safe_extras)}'
+        return f"{safe_base}<br/>{'<br/>'.join(safe_extras)}"
     else:
         return sanitize_mermaid_label(base_label)
 
@@ -176,9 +176,8 @@ def get_connection_label_parts(
     source_group_type = source_node.classification.group_type
 
     if conn_type == N8N_CONNECTION_TYPE_MAIN:
-        if (
-            source_group_type == NodeGroupType.ROUTER
-            and source_port.startswith("main_")
+        if source_group_type == NodeGroupType.ROUTER and source_port.startswith(
+            "main_"
         ):
             try:
                 port_index_str = source_port.split("_")[-1]
@@ -235,9 +234,7 @@ def _get_display_ids_subgraph_mode(
         display_target_id = f"{target_root_id}_graph"
         log_context = "enter_cluster_subgraph"
     elif (
-        source_is_clustered
-        and target_is_clustered
-        and source_root_id == target_root_id
+        source_is_clustered and target_is_clustered and source_root_id == target_root_id
     ):
         log_context = "internal_cluster_subgraph"
 
@@ -263,12 +260,8 @@ def _get_display_ids_simple_mode(
     target_is_clustered = target_node.cluster.is_clustered
     source_root_id = source_node.cluster.cluster_root_id
     target_root_id = target_node.cluster.cluster_root_id
-    source_is_root = (
-        source_node.classification.group_type == NodeGroupType.CLUSTER_ROOT
-    )
-    target_is_root = (
-        target_node.classification.group_type == NodeGroupType.CLUSTER_ROOT
-    )
+    source_is_root = source_node.classification.group_type == NodeGroupType.CLUSTER_ROOT
+    target_is_root = target_node.classification.group_type == NodeGroupType.CLUSTER_ROOT
 
     display_source_id = source_id
     display_target_id = target_id

@@ -107,9 +107,7 @@ class MermaidGeneratorV2:
                         final_key = f"{base_key}_{count}"
                     used_keys[base_key] = count + 1
 
-                    cluster_diagram = self._generate_single_cluster_diagram(
-                        root_node
-                    )
+                    cluster_diagram = self._generate_single_cluster_diagram(root_node)
                     if cluster_diagram:
                         result[final_key] = cluster_diagram
                         logger.debug(
@@ -123,9 +121,7 @@ class MermaidGeneratorV2:
                             root_node.id,
                         )
             else:
-                logger.info(
-                    "No V2 cluster roots found, no separate diagrams needed."
-                )
+                logger.info("No V2 cluster roots found, no separate diagrams needed.")
 
         logger.info(
             "V2 Mermaid generation complete. Returning %d diagram(s).",
@@ -148,8 +144,7 @@ class MermaidGeneratorV2:
             self.handled_node_ids_main,
         ) = define_nodes_and_subgraphs(self.analysis, self.params)
         logger.info(
-            "V2 Main diagram: Generated %d node/subgraph lines. "
-            "Handled elements: %d",
+            "V2 Main diagram: Generated %d node/subgraph lines. Handled elements: %d",
             len(node_defs),
             len(self.handled_node_ids_main),
         )
@@ -179,18 +174,14 @@ class MermaidGeneratorV2:
         if all_connections:
             output_lines.append("")
             output_lines.append("%% Connections (Main V2)")
-            output_lines.extend(
-                [f"    {conn.strip()}" for conn in all_connections]
-            )
+            output_lines.extend([f"    {conn.strip()}" for conn in all_connections])
         else:
             output_lines.append("")
             output_lines.append("    %% No connections generated (Main V2)")
 
         return "\n".join(output_lines).strip() + "\n"
 
-    def _generate_single_cluster_diagram(
-        self, root_node: AnalyzedNodeV2
-    ) -> str | None:
+    def _generate_single_cluster_diagram(self, root_node: AnalyzedNodeV2) -> str | None:
         """
         Generates a self-contained Mermaid diagram for a single V2 cluster.
 
@@ -200,9 +191,7 @@ class MermaidGeneratorV2:
         Returns:
             A string containing the Mermaid syntax for the cluster, or None.
         """
-        logger.debug(
-            "Generating diagram for V2 cluster root: %s", root_node.id
-        )
+        logger.debug("Generating diagram for V2 cluster root: %s", root_node.id)
         cluster_node_ids = {
             n.id
             for n in self.analysis.nodes.values()
@@ -210,9 +199,7 @@ class MermaidGeneratorV2:
         }
 
         if not cluster_node_ids:
-            logger.warning(
-                "V2 Cluster root %s has no associated nodes.", root_node.id
-            )
+            logger.warning("V2 Cluster root %s has no associated nodes.", root_node.id)
             return None
 
         node_defs: list[str] = []
@@ -220,9 +207,7 @@ class MermaidGeneratorV2:
             node = self.analysis.nodes[node_id]
             node_label = format_node_label(node, self.params)
             shape = get_mermaid_shape(node)
-            node_defs.append(
-                format_node_definition(node_id, node_label, shape)
-            )
+            node_defs.append(format_node_definition(node_id, node_label, shape))
 
         connection_defs: set[str] = set()
         for source_id in cluster_node_ids:
@@ -233,16 +218,11 @@ class MermaidGeneratorV2:
                 if target_id in cluster_node_ids:
                     arrow = (
                         "-->"
-                        if connection.connection_type
-                        == N8N_CONNECTION_TYPE_MAIN
+                        if connection.connection_type == N8N_CONNECTION_TYPE_MAIN
                         else "-.->"
                     )
-                    label_parts = get_connection_label_parts(
-                        source_node, connection
-                    )
-                    label_str = (
-                        f'|"{" ".join(label_parts)}"|' if label_parts else ""
-                    )
+                    label_parts = get_connection_label_parts(source_node, connection)
+                    label_str = f'|"{" ".join(label_parts)}"|' if label_parts else ""
                     link = f"{source_id} {arrow}{label_str} {target_id}"
                     if link not in connection_defs:
                         connection_defs.add(link)

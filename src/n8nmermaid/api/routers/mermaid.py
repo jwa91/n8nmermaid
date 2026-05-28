@@ -38,16 +38,22 @@ If `subgraph_display_mode` is 'separate_clusters', additional keys will contain
 diagrams for each cluster root.
 """,
     responses={
-        status.HTTP_400_BAD_REQUEST: {"model": ApiErrorDetail,
-                               "description": "Analysis or Orchestration Error"},
-        status.HTTP_422_UNPROCESSABLE_ENTITY: {"model": ApiErrorDetail,
-                                         "description": "Invalid Input Data"},
-        status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": ApiErrorDetail,
-                                          "description": "Internal Server Error"},
+        status.HTTP_400_BAD_REQUEST: {
+            "model": ApiErrorDetail,
+            "description": "Analysis or Orchestration Error",
+        },
+        status.HTTP_422_UNPROCESSABLE_ENTITY: {
+            "model": ApiErrorDetail,
+            "description": "Invalid Input Data",
+        },
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {
+            "model": ApiErrorDetail,
+            "description": "Internal Server Error",
+        },
     },
 )
 async def generate_mermaid_endpoint(
-    request_body: ApiMermaidRequest
+    request_body: ApiMermaidRequest,
 ) -> ApiMermaidResponse:
     """
     Handles requests to generate Mermaid diagrams.
@@ -68,8 +74,9 @@ async def generate_mermaid_endpoint(
         )
 
         if not isinstance(result, dict):
-            logger.error("Mermaid generation returned unexpected type: %s",
-                      type(result).__name__)
+            logger.error(
+                "Mermaid generation returned unexpected type: %s", type(result).__name__
+            )
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Internal server error: Generator returned unexpected format.",

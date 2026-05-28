@@ -1,7 +1,6 @@
 # src/n8nmermaid/core/generators/mermaid_v2/constants.py
 """Constants and mappings for the V2 Mermaid generator."""
 
-
 from n8nmermaid.core.analyzer_v2.constants import N8nConnectionLiteral
 from n8nmermaid.core.analyzer_v2.models import NodeGroupType
 
