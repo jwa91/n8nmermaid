@@ -1,6 +1,6 @@
 services:
   api:
-    image: n8nmermaid-api:v0.3.0
+    image: n8nmermaid-api:v0.3.1
     container_name: n8nmermaid-api
     restart: unless-stopped
     ports:
