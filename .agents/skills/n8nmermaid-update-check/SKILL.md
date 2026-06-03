@@ -17,7 +17,7 @@ Check for Python runtime and package updates in the FastAPI n8nmermaid service.
 ## Step 1: Check Versions
 
 ```bash
-uv run .agents/skills/s-n8nmermaid-update-check/n8nmermaid-update-check/scripts/fetch_versions.py .
+uv run .agents/skills/n8nmermaid-update-check/scripts/fetch_versions.py .
 ```
 
 Output includes:
@@ -29,7 +29,7 @@ Output includes:
 ### Python Updates
 
 **Same minor (patch):** e.g., 3.13.0 → 3.13.1
-- Safe to update, just change Dockerfile tag
+- Safe to update, change the Dockerfile `PYTHON_IMAGE` default
 
 **New minor version:** e.g., 3.13 → 3.14
 - Check Python release notes for deprecations
@@ -92,7 +92,7 @@ uv lock --upgrade
 uv add fastapi@latest uvicorn@latest
 
 # For Python update, edit Dockerfile:
-# Change: FROM python:3.13-slim → FROM python:3.14-slim
+# Change: ARG PYTHON_IMAGE=python:3.13-slim → ARG PYTHON_IMAGE=python:3.14-slim
 
 # Sync dependencies
 uv sync
@@ -112,9 +112,8 @@ Major: [list major updates]
 Minor: [count] packages
 Patch: [count] packages"
 
-# Push and create PR
+# Push branch for review
 git push -u origin update/deps-$(date +%Y%m%d)
-gh pr create --title "Update dependencies" --body "..."
 ```
 
 ## Step 4b: Report Blockers
@@ -140,7 +139,7 @@ Common breaking patterns:
 - Middleware API changes
 
 After FastAPI updates, verify:
-- API starts: `uv run uvicorn src.n8nmermaid.api.main:app`
+- API starts: `uv run uvicorn n8nmermaid.api.main:app`
 - Endpoints respond correctly
 - OpenAPI docs generate (`/docs`)
 
@@ -159,6 +158,13 @@ After any updates, verify:
 ```bash
 uv sync                    # Sync dependencies
 uv run ruff check .        # Linting
-uv run uvicorn src.n8nmermaid.api.main:app  # Start API
+uv run uvicorn n8nmermaid.api.main:app  # Start API
 # Test endpoints manually or with curl
 ```
+
+## Release Notes
+
+Production deploys are signed Forgejo releases from
+`jwa91/vps-n8nmermaid-api`. After dependency or Python runtime updates, the
+release package must build a Linux/amd64 Docker image from `uv.lock`, include
+the image archive, and avoid edge-side `docker compose up --build`.

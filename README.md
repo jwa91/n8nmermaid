@@ -26,7 +26,7 @@ The tool provides a Command Line Interface (CLI) for easy use and an optional Fa
   * Supports output formats: `text`, `markdown`, `json`.
 - **Command Line Interface:** Easy-to-use CLI built with Typer.
 - **FastAPI Interface:** Provides HTTP endpoints for generation (see [API README](src/n8nmermaid/api/README.md)).
-- **Configurable Logging:** Set log level and output target via `.env`.
+- **Configurable Logging:** Set log level and output target via environment.
 
 ## Installation
 
@@ -35,7 +35,7 @@ The tool provides a Command Line Interface (CLI) for easy use and an optional Fa
     - `uv` (recommended) or `pip`.
 2.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/jwa91/n8nmermaid.git](https://github.com/jwa91/n8nmermaid.git)
+    git clone ssh://git@forgejo.janwillemaltink.com:2222/jwa91/vps-n8nmermaid-api.git
     cd n8nmermaid
     ```
 3.  **Install dependencies (recommended with `uv`):**
@@ -136,9 +136,31 @@ This option affects how "clusters" (e.g., AI Agent + tools) are visualized in th
 
 `n8nmermaid` also offers a FastAPI interface. See the [API README](src/n8nmermaid/api/README.md) for details on the endpoints (`/v2/mermaid`, `/v2/report`), how to start the server (`uvicorn`), and `cURL` examples.
 
+## Production Deployment
+
+Production API deploys use signed Forgejo semver releases in
+`jwa91/vps-n8nmermaid-api`.
+
+- The release build creates a Linux/amd64 Docker image tagged
+  `n8nmermaid-api:vX.Y.Z`.
+- The release tarball contains the prebuilt Docker image archive,
+  `compose.runtime.yaml`, the stack systemd unit, the installer, `VERSION`,
+  `manifest.json`, and `SHA256SUMS`.
+- The edge VPS does not run Git checkouts, source resets, or Docker builds. It
+  verifies release assets, runs `docker load`, points
+  `/opt/n8nmermaid-api/current` and `/var/services/n8nmermaid` at the verified
+  release, restarts Compose, and health-checks `http://127.0.0.1:8000/`.
+- Runtime environment lives at `/etc/n8nmermaid-api/env`. New installs default
+  to `LOGGING_TARGET=CONSOLE` and `N8NMERMAID_LOG_LEVEL=INFO`.
+- Create a signed release commit and a signed annotated tag matching
+  `VERSION`, then run `make release`.
+
 ## Logging Configuration
 
-Configure logging via a `.env` file in the root (see `.env.example`). Set `N8NMERMAID_LOG_LEVEL` (DEBUG, INFO, etc.) and `LOGGING_TARGET` (`FILE` or `CONSOLE`).
+Configure logging via environment (see `.env.example` for local development).
+Set `N8NMERMAID_LOG_LEVEL` (`DEBUG`, `INFO`, etc.) and `LOGGING_TARGET`
+(`FILE` or `CONSOLE`). Production runtime uses `/etc/n8nmermaid-api/env` and
+defaults to console logging.
 
 ## Project Structure
 

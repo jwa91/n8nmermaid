@@ -1,0 +1,21 @@
+[Unit]
+Description=n8nmermaid API compose stack
+Requires=docker.service
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/var/services/n8nmermaid
+Environment=COMPOSE_PROJECT_NAME=n8nmermaid-api
+Environment=N8NMERMAID_API_ENV_FILE=/etc/n8nmermaid-api/env
+ExecStartPre=/usr/bin/test -f /etc/n8nmermaid-api/env
+ExecStartPre=/usr/bin/docker compose -f compose.runtime.yaml config --quiet
+ExecStart=/usr/bin/docker compose -f compose.runtime.yaml up -d --remove-orphans
+ExecStop=/usr/bin/docker compose -f compose.runtime.yaml down
+TimeoutStartSec=5m
+TimeoutStopSec=2m
+
+[Install]
+WantedBy=multi-user.target

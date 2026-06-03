@@ -23,8 +23,10 @@ def get_dockerfile_python_version(dockerfile_path: Path) -> str | None:
     """Extract Python version from Dockerfile."""
     content = dockerfile_path.read_text()
 
-    # Match patterns like: FROM python:3.13-slim or FROM python:3.13
-    match = re.search(r"FROM python:([\d.]+)", content)
+    # Match patterns like:
+    #   ARG PYTHON_IMAGE=python:3.13-slim
+    #   FROM python:3.13-slim
+    match = re.search(r"(?:ARG PYTHON_IMAGE=|FROM )python:([\d.]+)", content)
     if match:
         return match.group(1)
     return None

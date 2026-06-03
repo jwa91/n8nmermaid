@@ -39,6 +39,15 @@ It uses the core logic from `src/n8nmermaid/core/`. For detailed analysis/genera
     ```
 3.  **Access:** API at `http://localhost:8000`, interactive docs at `http://localhost:8000/docs`.
 
+## Production Deployment
+
+Production runs from signed Forgejo semver releases in
+`jwa91/vps-n8nmermaid-api`. Release artifacts include a prebuilt Linux/amd64
+Docker image archive tagged `n8nmermaid-api:vX.Y.Z`; edge verifies the signed
+tarball and checksums, runs `docker load`, restarts the runtime-only Compose
+stack, and health-checks `http://127.0.0.1:8000/`. Runtime environment is kept
+outside the artifact at `/etc/n8nmermaid-api/env`.
+
 ## Usage Examples (cURL)
 
 **Generate Default Mermaid Diagram:**

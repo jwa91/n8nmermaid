@@ -1,0 +1,20 @@
+services:
+  api:
+    image: n8nmermaid-api:v0.3.0
+    container_name: n8nmermaid-api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    env_file:
+      - ${N8NMERMAID_API_ENV_FILE:-/etc/n8nmermaid-api/env}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/')"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
