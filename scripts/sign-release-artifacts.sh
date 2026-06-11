@@ -7,7 +7,7 @@ if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
 fi
 
 tag="$1"
-key_id="${2:-${RELEASE_SIGNING_KEY_ID:-CE95C51AC2ADB33C63D0DBBEAA2B33748BF3C5BA}}"
+key_id="${2:-${RELEASE_SIGNING_KEY_ID:-D9B5AFD9450780266FD8E8AED36828EA2FC45FB1!}}"
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 release_artifacts_dir="${RELEASE_ARTIFACTS_DIR:-${repo_root}/release-artifacts}"
 package_file="${release_artifacts_dir}/${tag}.tar.gz"
